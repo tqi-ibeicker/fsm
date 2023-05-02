@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 public class NoTransitionHandler {
 
     public void handleNoTransition(NoTransitionException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("{}", e.toString());
     }
 }

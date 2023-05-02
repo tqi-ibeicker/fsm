@@ -43,6 +43,7 @@ public class Fsm {
         try {
             fsmTransition = function.apply(contractState);
         } catch (NoTransitionException e) {
+            e.setCurrentState(contractStateEnum.name());
             onNoTransitionException.accept(e);
             return contractStateEnum;
         } catch (Exception e) {

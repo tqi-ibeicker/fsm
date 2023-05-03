@@ -1,11 +1,11 @@
 package com.example.fsm.business.state;
 
 import com.example.fsm.business.model.BalanceUpdate;
+import com.example.fsm.business.model.Contract;
 import com.example.fsm.business.model.ContractStateEnum;
 import com.example.fsm.business.model.IndebtedEvent;
 import com.example.fsm.model.FsmContext;
 import com.example.fsm.model.FsmTransition;
-import com.example.fsm.states.ContractState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,14 +21,14 @@ public class IndebtedState implements ContractState {
     }
 
     @Override
-    public FsmTransition receiveIndebtedRemoval(IndebtedEvent indebtedEvent, FsmContext context) {
-        log.info("Removing from indebted {}", context.getContract());
+    public FsmTransition<Contract> receiveIndebtedRemoval(IndebtedEvent indebtedEvent, FsmContext<Contract> context) {
+        log.info("Removing from indebted {}", context.getPayload());
         return context.transitionTo(NotIndebtedState.class);
     }
 
     @Override
-    public FsmTransition receiveBalanceUpdate(BalanceUpdate balanceUpdate, FsmContext context) {
-        log.info("Updading Indebted balance {}", context.getContract());
+    public FsmTransition<Contract> receiveBalanceUpdate(BalanceUpdate balanceUpdate, FsmContext<Contract> context) {
+        log.info("Updading Indebted balance {}", context.getPayload());
         return context.stop();
     }
 }

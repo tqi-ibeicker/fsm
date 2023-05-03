@@ -1,21 +1,30 @@
 package com.example.fsm.model;
 
-import com.example.fsm.business.model.Contract;
-import com.example.fsm.states.State;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Contexto de uma chamada de execução a uma FSM. Tem por propósito manter um payload de negócio a ser chamado nas ações
+ * dos estados e facilitar a criação de transições de estado.
+ * @param <T>
+ */
 @RequiredArgsConstructor
-public class FsmContext {
+public class FsmContext<T> {
 
     @Getter
-    private final Contract contract;
+    private final T payload;
 
-    public FsmTransition transitionTo(Class<? extends State> nextState) {
-        return FsmTransition.to(nextState, contract);
+    public FsmTransition<T> transitionTo(Class<? extends State<T, ?>> nextState) {
+        FsmTransition<T> t = new FsmTransition<>();
+        t.setTransitionType(TransitionEnum.TRANSITION);
+        t.setNextState(nextState);
+        t.setPayload(payload);
+        return t;
     }
 
-    public FsmTransition stop() {
-        return FsmTransition.stop();
+    public FsmTransition<T> stop() {
+        FsmTransition<T> t = new FsmTransition<>();
+        t.setTransitionType(TransitionEnum.STOP);
+        return t;
     }
 }

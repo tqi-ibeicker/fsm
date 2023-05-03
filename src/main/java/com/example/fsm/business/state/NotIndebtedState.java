@@ -1,9 +1,9 @@
 package com.example.fsm.business.state;
 
+import com.example.fsm.business.model.Contract;
 import com.example.fsm.business.model.ContractStateEnum;
 import com.example.fsm.model.FsmContext;
 import com.example.fsm.model.FsmTransition;
-import com.example.fsm.states.ContractState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,8 @@ public class NotIndebtedState implements ContractState {
     }
 
     @Override
-    public FsmTransition onEntry(FsmContext context) {
-        log.info("Sending to history {}", context.getContract());
+    public FsmTransition<Contract> onEntry(FsmContext<Contract> context) {
+        log.info("Sending to history and deleting {}", context.getPayload());
         return context.stop();
     }
 }

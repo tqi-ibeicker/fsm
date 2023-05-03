@@ -1,15 +1,9 @@
 package com.example.fsm;
 
 import com.example.fsm.business.model.*;
-import com.example.fsm.model.FsmContext;
-import com.example.fsm.model.FsmTransition;
-import com.example.fsm.service.Fsm;
-import com.example.fsm.states.ContractState;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.function.Function;
 
 import static com.example.fsm.business.model.ContractStateEnum.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FsmApplicationTests {
 
 	@Autowired
-	private Fsm contractFms;
+	private ContractFsm contractFsm;
 
 	@Test
 	void contextLoads() {
@@ -27,21 +21,26 @@ class FsmApplicationTests {
 	@Test
 	public void test1() {
 		Contract c1 = new Contract("001122");
-		FsmContext fsmContext = new FsmContext(c1);
-		ContractStateEnum next = contractFms.execute(INITIAL, cs -> cs.receiveIndebted(new IndebtedEvent(), fsmContext));
+		ContractStateEnum next = contractFsm
+				.of(c1, INITIAL)
+				.execute((cs, cx) -> cs.receiveIndebted(new IndebtedEvent(), cx));
 		assertEquals(INDEBTED, next);
-		next = contractFms.execute(next, cs -> cs.receiveBalanceUpdate(new BalanceUpdate(), fsmContext));
+		next = contractFsm
+				.of(c1, next)
+				.execute((cs, cx) -> cs.receiveBalanceUpdate(new BalanceUpdate(), cx));
 		assertEquals(INDEBTED, next);
-		next = contractFms.execute(next, cs -> cs.receiveIndebtedRemoval(new IndebtedEvent(), fsmContext));
+		next = contractFsm
+				.of(c1, next)
+				.execute((cs, cx) -> cs.receiveIndebtedRemoval(new IndebtedEvent(), cx));
 		assertEquals(NOT_INDEBTED, next);
 	}
 
 	@Test
 	public void testNoTransition() {
 		Contract c1 = new Contract("001122");
-		FsmContext fsmContext = new FsmContext(c1);
-		ContractStateEnum next = contractFms.execute(INITIAL, cs -> cs.receiveBrokenAgreement(new BrokenAgreement(),
-				fsmContext));
+		ContractStateEnum next = contractFsm
+				.of(c1, INITIAL)
+				.execute((cs, cx) -> cs.receiveBrokenAgreement(new BrokenAgreement(), cx));
 		assertEquals(ContractStateEnum.INITIAL, next);
 	}
 }

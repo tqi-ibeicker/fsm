@@ -1,31 +1,16 @@
 package com.example.fsm.model;
 
-import com.example.fsm.business.model.Contract;
-import com.example.fsm.states.State;
 import lombok.Data;
 
 @Data
-public class FsmTransition {
+public class FsmTransition<T> {
 
     private TransitionEnum transitionType;
 
-    private Class<? extends State> nextState;
+    private Class<? extends State<T, ?>> nextState;
 
-    private Contract contract;
+    private T payload;
 
     public FsmTransition() {}
 
-    public static FsmTransition to(Class<? extends State> nextState, Contract contract) {
-        FsmTransition t = new FsmTransition();
-        t.setTransitionType(TransitionEnum.TRANSITION);
-        t.setNextState(nextState);
-        t.setContract(contract);
-        return t;
-    }
-
-    public static FsmTransition stop() {
-        FsmTransition t = new FsmTransition();
-        t.setTransitionType(TransitionEnum.STOP);
-        return t;
-    }
 }
